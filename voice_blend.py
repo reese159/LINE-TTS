@@ -1,31 +1,7 @@
 import torch
 from kokoro import KPipeline
 
-# input text
-test_txt = """This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro.
-This is a test blending the voices of alloy and bella from kokoro."""
-
-def blend_voices(voice_list, weight_list):
+def blending(voice_list, weight_list, text_to_narrate = ""):
     """
     Function to blend voices from Kokoro TTS and save the blended voice.
     This function loads voice tensors, blends them, and returns the resulting voice generator.
@@ -59,9 +35,9 @@ def blend_voices(voice_list, weight_list):
 
         # return voice generator using new voice
         return pipeline(
-            test_txt, voice='blended_voice',
-            speed=1, 
-        )#split_pattern=r'\n+'
+            text=text_to_narrate,
+            voice='blended_voice', speed=1, split_pattern=r'\n+'
+        )
 
 
     except Exception as e:
