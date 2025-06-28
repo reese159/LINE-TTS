@@ -1,13 +1,37 @@
 from pydub import AudioSegment # type: ignore
+import os
 
-# Load audio files
-audio1 = AudioSegment.from_file("0.wav", format="wav")
-audio2 = AudioSegment.from_file("1.wav", format="wav")
+def join_audio_files(temp_path, output_file, narration_name="User Narration"):
+    combined_audio = AudioSegment.empty()
+    
+    for filename in os.listdir(temp_path):
+        if filename.endswith('.wav'):
+            file_path = os.path.join(temp_path, filename)
+            try:
+                audio_segment = AudioSegment.from_wav(file_path)
+                if combined_audio is None:
+                    combined_audio = audio_segment
+                else:
+                    combined_audio += audio_segment
+            except Exception as e:
+                print(f"Error processing file {file_path}: {e}")
+                continue
 
-# Combine audio files (concatenation)
-combined_audio = audio1 + audio2
+    try:
+        # export combined audio
+        combined_audio.export(f"final_narrations\\{narration_name}", format="wav")
+        print(f"Audio files combined successfully into {narration_name}")
+    except Exception as e:
+        print(f"Error exporting combined audio: {e}")
 
-# Export the combined audio
-combined_audio.export("combined_output.wav", format="wav")
-
-print("Audio files combined successfully!")
+def clear_temp_files():
+    import os
+    temp_dir = 'temp'
+    for filename in os.listdir(temp_dir):
+        file_path = os.path.join(temp_dir, filename)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+                print(f"Deleted temporary file: {file_path}")
+        except Exception as e:
+            print(f"Error deleting file {file_path}: {e}")
