@@ -1,0 +1,1 @@
+This folder holds temp audio segments to be joined into a single narration

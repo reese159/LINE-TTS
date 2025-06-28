@@ -1,7 +1,7 @@
 from pydub import AudioSegment # type: ignore
 import os
 
-def join_audio_files(temp_path, output_file, narration_name="User Narration"):
+def join_audio_files(temp_path, output_file, narration_name="user_narration.wav"):
     combined_audio = AudioSegment.empty()
     
     for filename in os.listdir(temp_path):
