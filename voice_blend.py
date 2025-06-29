@@ -13,13 +13,7 @@ def blending(voice_list, weight_list, text_to_narrate = ""):
     # TODO: MOVE FOLLOWING NOTE TO README
     # Note: the language code refers to the language of the text itself and can be at odds with the voice tensor
     # e.g a british, japanese, etc. voice (bf_george) can be used to speak american english text (lang-code='a')
-
-    # load voice tensors
-    # af_alloy = torch.load('assets/voices/af_sarah.pt')
-    # af_bella = torch.load('assets/voices/am_adam.pt')
-    # af_heart = torch.load('assets/voices/af_heart.pt')
-    # Load voice tensors from the provided list
-
+    
     # Use CUDA-enabled gpu if available, else default to CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -28,8 +22,15 @@ def blending(voice_list, weight_list, text_to_narrate = ""):
         loaded_voices = []
         for voice in voice_list:
             if isinstance(voice, str):
-                loaded_voice = torch.load(f'assets\\voices\\{voice.strip()}.pt')
-                loaded_voices.append(loaded_voice)
+                try:
+                    loaded_voice = torch.load(f'assets\\voices\\{voice.strip()}.pt')
+                    loaded_voices.append(loaded_voice)
+                except FileNotFoundError:
+                    print(f"""Voice file {voice.strip()}.pt not found in assets/voices directory.
+                          Checking user_voices directory for voice file.""")
+                    loaded_voice = torch.load(f'user_voices\\{voice.strip()}.pt')
+                    loaded_voices.append(loaded_voice)
+                    # return None
             else:
                 loaded_voices.append(voice)
         # Convert weights to floats if they are strings
@@ -44,11 +45,11 @@ def blending(voice_list, weight_list, text_to_narrate = ""):
         # save new voice to pipeline & return after removing extra dimension
         pipeline.voices['blended_voice'] = blended_voice.squeeze(0)
 
-        # return voice generator using new voice
+        # return voice generator using new voice, as well as new voice
         return pipeline(
             text=text_to_narrate,
             voice='blended_voice', speed=1, split_pattern=r'(?<=[.!?])\s+'#r'\n+'
-        )
+        ), blended_voice
 
 
     except Exception as e:
