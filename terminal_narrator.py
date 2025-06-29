@@ -36,5 +36,5 @@ for i, (gs, ps, audio) in enumerate(new_voice):
     sf.write(f'temp\\blended_voice_segment_{i}.wav', audio, 24000) # save each audio file
 
 # print(f"Temporary audio files: {temp_audio}")  # print list of temp audio files
-aj.join_audio_files("temp", f'final_narrations\\blended_voice_segment_{i}.wav') # join audio files
+aj.join_audio_files("temp", narration_name="user_narration_test.wav") # join audio files
 aj.clear_temp_files() # clear temp files after joining

@@ -15,4 +15,3 @@ def read_pdf(pdf_path):
         print(f"An error occurred: {e}")
     return text
 
-
