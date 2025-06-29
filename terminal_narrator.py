@@ -4,27 +4,37 @@ from IPython.display import display, Audio
 import soundfile as sf
 import audio_joiner as aj
 import os
-from os.path import join, isfile
+# from os.path import join, isfile
+import file_reader
 
+# NOTE: This will be made more robust with checks for validity in final version
+voices_to_blend = input("Enter the voices to blend (comma-separated, e.g., af_sarah, am_adam, af_heart): ")
+voices_to_blend = voices_to_blend.replace(" ", "")  # Remove any spaces
+voice_list = voices_to_blend.split(",")  # Split input by commas
 
-# load voice tensors
-af_alloy = torch.load('assets/voices/af_sarah.pt')
-af_bella = torch.load('assets/voices/am_adam.pt')
-af_heart = torch.load('assets/voices/af_heart.pt')
+print(voice_list)
 
-voice_list = [af_alloy, af_bella, af_heart]
-weight_list = [0.5, 0.3, 0.2]  # Example weights for blending
+# NOTE: This will be made more robust with checks for validity in final version
+weights_to_blend = input("Enter the weights to blend (comma-separated, e.g., 0.5, 0.3, 0.2): ")
+weights_to_blend = weights_to_blend.replace(" ", "")  # Remove any spaces
+weight_list = weights_to_blend.split(",")  # Split input by commas
 
-# input text
-test_txt = """This is a test blending  voices from kokoro.
-This is a test blending  voices from kokoro.
-This is a test blending  voices from kokoro.
-This is a test blending  voices from kokoro."""
+# NOTE: This will be made more robust with checks for validity in final version
+pdf_to_narrate = input("Enter the path to the PDF to narrate: ")
+text_to_narrate = file_reader.read_pdf(pdf_to_narrate)  # Read the PDF content
 
-new_voice = voice_blend.blending(voice_list, weight_list, test_txt)
+print(text_to_narrate)
+
+# load voice tensors from list
+# for i, voice_name in enumerate(voice_to_blend):
+#     voice_to_blend[i] = torch.load(f'assets/voices/{voice_name.strip()}.pt')
+
+new_voice = voice_blend.blending(voice_list, weight_list, text_to_narrate)
 
 # add all files in temp directory to a list
 os.makedirs("temp\\", exist_ok=True)
+
+print(new_voice)
 
 # display and save audio segments using method displayed in kokoro documentation:
 for i, (gs, ps, audio) in enumerate(new_voice):
