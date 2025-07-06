@@ -7,15 +7,9 @@ def join_audio_files(temp_path, narration_name="user_narration.wav"):
     for filename in os.listdir(temp_path):
         if filename.endswith('.wav'):
             file_path = os.path.join(temp_path, filename)
-            try:
-                audio_segment = AudioSegment.from_wav(file_path)
-                # if combined_audio is None:
-                #     combined_audio = audio_segment
-                # else:
-                combined_audio += audio_segment
-            except Exception as e:
-                print(f"Error processing file {file_path}: {e}")
-                continue
+            audio_segment = AudioSegment.from_wav(file_path)
+            combined_audio += audio_segment
+
 
     try:
         # export combined audio
