@@ -9,20 +9,19 @@ if "voices" not in st.session_state:
 
 
 # File uploader for the voice tensor file
-uploaded_voice = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
+uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
 
-if uploaded_voice:
-    try:
-        new_voice = torch.load(uploaded_voice)
-        if st.session_state.voices.get(uploaded_voice.name,) is not None:
+if uploaded_voices:
+    for uploaded_voice in uploaded_voices:
+        try:
+            new_voice = torch.load(uploaded_voice)
             st.session_state.voices.append({"name": uploaded_voice.name,
                                             "data": uploaded_voice, "weight": 0.0})
-            st.success("Voice tensor loaded successfully!")
-        else:
-            st.error("The uploaded file does not contain a valid voice tensor.")
 
-    except Exception as e:
-        st.error(f"Error loading voice tensor: {e}")
+        except Exception as e:
+            st.error(f"Error loading voice tensor: {e}")
+            
+    st.success("Voice tensors loaded!")
 
 # --- Display loaded voices and get weights ---
 if st.session_state.voices:
