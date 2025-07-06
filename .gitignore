@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# local files
+local*
+
 # secrets, api keys, etc.
 secrets.toml
 
