@@ -48,7 +48,10 @@ def blending(voice_list, weight_list, text_to_narrate = ""):
         # return voice generator using new voice, as well as new voice
         return pipeline(
             text=text_to_narrate,
-            voice='blended_voice', speed=1, split_pattern=r'(?<=[.!?])\s+'#r'\n+'
+            voice='blended_voice', speed=1,
+            # Currently separating text by paragraphs, but can be adjusted
+            # Other options: punctuatino or new liner'(?<=[.!?])\s+'#r'\n+'
+            split_pattern=r'\n\n'
         ), blended_voice
 
 
