@@ -19,7 +19,7 @@ if uploaded_voices:
                                             "data": uploaded_voice, "weight": 0.0})
 
         except Exception as e:
-            st.error(f"Error loading voice tensor: {e}")
+            st.error(f"Error loading voice tensor {uploaded_voice.name}: {e}")
             
     st.success("Voice tensors loaded!")
 
