@@ -7,7 +7,6 @@ st.write("Local Interactive Narration Environment")
 if "voices" not in st.session_state:
     st.session_state.voices = []
 
-
 # File uploader for the voice tensor file
 uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
 
@@ -52,3 +51,19 @@ if st.session_state.voices:
         st.warning(f"Total weight is {total_weight:.2f}. It should be 1.0 for proper blending.")
     else:
         st.success("Weights are valid and sum to 1.0.")
+
+# --- Text input for narration ---
+st.subheader("Text Input for Narration")
+input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
+if input_type == "Upload PDF":
+    uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
+    if uploaded_file is not None:
+        # Process the uploaded PDF file
+        st.success("PDF file uploaded successfully!")
+        # Add code here to process the uploaded file
+elif input_type == "Enter Text":
+    text_input = st.text_area("Enter your text here:", height=150)
+    if text_input:
+        # Process the entered text
+        st.success("Text entered successfully!")
+        # Add code here to process the text
