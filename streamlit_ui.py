@@ -67,29 +67,24 @@ input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
     if uploaded_file is not None:
-        # Process the uploaded PDF file
         st.success("PDF file uploaded successfully!")
-        # Add code here to process the uploaded file
+        # TODO: read through pdf
 elif input_type == "Enter Text":
     text_input = st.text_area("Enter your text here:", height=150)
     if text_input:
-        # Process the entered text
         st.success("Text entered successfully!")
-        # Add code here to process the text
-
-text = "TEST 123 TEST"
 
 # --- Generate summary ---
-try:
-    # st.secrets["api_keys"]["OPENAI_API_KEY"]
-    from text_summarization import summarize_text
-    st.subheader("Text Summarization")
-    
-    if st.button("Summarize Text"):        
-        summary = summarize_text(text, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
-        st.write("Summary:")
-        st.write(summary)
+from text_summarization import summarize_text
+st.subheader("Text Summarization")
+
+if st.button("Summarize Text"):
+    if "OPENAI_API_KEY" in st.secrets:
+        summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
     else:
-        st.error("OpenAI API key is not set. Please set the key to use summarization.")
-except Exception as e:
-    st.error(f"Error in summarization: {e}")
+        summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250)
+    
+    st.write("Summary:")
+    st.write(summary)
+else:
+    st.error("OpenAI API key is not set. Please set the key to use summarization.")
