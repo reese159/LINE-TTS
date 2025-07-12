@@ -81,8 +81,6 @@ st.subheader("Text Summarization")
 if st.button("Summarize Text"):
     if "OPENAI_API_KEY" in st.secrets:
         summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
-    else:
-        summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250)
     
     st.write("Summary:")
     st.write(summary)
