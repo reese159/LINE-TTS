@@ -4,6 +4,13 @@ import torch
 st.title("LINE-TTS Narration App")
 st.write("Local Interactive Narration Environment")
 
+# Initialize the validation checks
+if 'valid_voice' not in st.session_state:
+    st.session_state.valid_voice = False
+if 'valid_text' not in st.session_state:
+    st.session_state.valid_text = False
+
+# Initialize voices in session state
 if "voices" not in st.session_state:
     st.session_state.voices = []
 
@@ -67,3 +74,5 @@ elif input_type == "Enter Text":
         # Process the entered text
         st.success("Text entered successfully!")
         # Add code here to process the text
+
+# --- Generate summary ---
