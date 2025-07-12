@@ -7,7 +7,7 @@ st.write("Local Interactive Narration Environment")
 # Initialize the validation checks
 if 'valid_voice' not in st.session_state:
     st.session_state.valid_voice = False
-if 'valid_text' not in st.session_state:
+if 'valid_text' not in st.session_state:        # TODO: Validate current text input prior to summary & narration
     st.session_state.valid_text = False
 
 # Initialize voices in session state
@@ -52,11 +52,13 @@ if st.session_state.voices:
         st.session_state.voices[i]["weight"] = weight
         current_weights.append(weight)
         
-        # Validate sum of weights to be 1.0
+    # Validate sum of weights to be 1.0
     total_weight = sum(current_weights)
     if total_weight != 1.0:
+        st.session_state.valid_voice = False
         st.warning(f"Total weight is {total_weight:.2f}. It should be 1.0 for proper blending.")
     else:
+        st.session_state.valid_voice = True
         st.success("Weights are valid and sum to 1.0.")
 
 # --- Text input for narration ---
@@ -75,4 +77,19 @@ elif input_type == "Enter Text":
         st.success("Text entered successfully!")
         # Add code here to process the text
 
+text = "TEST 123 TEST"
+
 # --- Generate summary ---
+try:
+    # st.secrets["api_keys"]["OPENAI_API_KEY"]
+    from text_summarization import summarize_text
+    st.subheader("Text Summarization")
+    
+    if st.button("Summarize Text"):        
+        summary = summarize_text(text, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
+        st.write("Summary:")
+        st.write(summary)
+    else:
+        st.error("OpenAI API key is not set. Please set the key to use summarization.")
+except Exception as e:
+    st.error(f"Error in summarization: {e}")
