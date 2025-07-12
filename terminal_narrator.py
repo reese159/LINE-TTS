@@ -12,8 +12,6 @@ voices_to_blend = input("Enter the voices to blend (comma-separated, e.g., af_sa
 voices_to_blend = voices_to_blend.replace(" ", "")  # Remove any spaces
 voice_list = voices_to_blend.split(",")  # Split input by commas
 
-print(voice_list)
-
 # NOTE: This will be made more robust with checks for validity in final version
 weights_to_blend = input("Enter the weights to blend (comma-separated, e.g., 0.5, 0.3, 0.2): ")
 weights_to_blend = weights_to_blend.replace(" ", "")  # Remove any spaces
@@ -63,8 +61,6 @@ if continue_narration == 'y':
     base_name = os.path.splitext(pdf_to_narrate)[0]
     aj.join_audio_files("temp", narration_name=f"{base_name}.wav") # join audio files
     aj.clear_temp_files() # clear temp files after joining
-
-
 
 
 save_vioce = input("Do you want to save the blended voice? (y/n): ").strip().lower()
