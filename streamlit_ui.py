@@ -4,6 +4,8 @@ import torch
 st.title("LINE-TTS Narration App")
 st.write("Local Interactive Narration Environment")
 
+st.set_page_config(layout="wide")
+
 # Initialize the validation checks
 if 'valid_voice' not in st.session_state:
     st.session_state.valid_voice = False
@@ -13,6 +15,16 @@ if 'valid_text' not in st.session_state:        # TODO: Validate current text in
 # Initialize voices in session state
 if "voices" not in st.session_state:
     st.session_state.voices = []
+    
+with st.sidebar:
+    st.subheader("Config")
+    st.write("Adjust the settings below:")
+    # Option to change OpenAI model
+    model = st.selectbox("Select OpenAI Model", ["gpt-3.5-turbo", "gpt-4"], index=0)
+    # Option to set max tokens for summary
+    max_tokens = st.slider("Max Tokens for Summary", min_value=50, max_value=1000, value=250, step=50)
+    st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library")
+    st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
 # File uploader for the voice tensor file
 uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
@@ -79,7 +91,8 @@ from text_summarization import summarize_text
 st.subheader("Text Summarization")
 
 if st.button("Summarize Text"):
-    summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
+    summary = summarize_text(text_input, model=model, max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
     st.write("Summary:")
     st.write(summary)
+    
     
