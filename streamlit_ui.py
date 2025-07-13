@@ -82,5 +82,4 @@ if st.button("Summarize Text"):
     summary = summarize_text(text_input, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
     st.write("Summary:")
     st.write(summary)
-else:
-    st.error("OpenAI API key is not set. Please set the key to use summarization.")
+    
