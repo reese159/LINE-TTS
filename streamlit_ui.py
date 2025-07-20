@@ -31,7 +31,7 @@ with st.sidebar:
     # Option to change OpenAI model
     model = st.selectbox("Select OpenAI Model", ["gpt-4o-mini", "gpt-4.1-nano", "gpt-4.1"], index=0)
     # Option to set max tokens for summary
-    max_tokens = st.slider("Max Tokens for Summary Output", min_value=50, max_value=1000, value=250, step=50)
+    # max_tokens = st.slider("Max Tokens for Summary Output", min_value=50, max_value=1000, value=250, step=50)
     st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library")
     st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
@@ -113,7 +113,7 @@ if st.session_state.text_input:
             log_narration=""
             
             with st.spinner("Generating summary..."):
-                summary = summarize_text(st.session_state.text_input, model=model, max_tokens=max_tokens, openai_api_key=st.secrets["OPENAI_API_KEY"])
+                summary = summarize_text(st.session_state.text_input, model=model, openai_api_key=st.secrets["OPENAI_API_KEY"])
                 st.text_area("Sumary:", summary, height=150)
                 narration_text_box = st.empty()
                 
@@ -152,11 +152,10 @@ if st.session_state.text_input:
 
             # display and save audio segments using method displayed in kokoro documentation:
             for i, (gs, ps, audio) in enumerate(new_pipeline):
-                log_narration = f"""
-                Segment {i}:
-                Graphemes: {gs}
-                Phonemes: {ps}
-                """ + log_narration
+                log_narration = f"""Segment {i}:
+Graphemes: {gs}
+Phonemes: {ps}
+""" + log_narration
                 narration_text_box.text_area("Watch the narration process:", log_narration, height=500)
                 new_audio_segment = aj.tensor_to_audio_segment(audio, sample_rate=24000)
                 full_audio += new_audio_segment
