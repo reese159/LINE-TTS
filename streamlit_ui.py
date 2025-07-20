@@ -91,7 +91,9 @@ input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
     if uploaded_file is not None:
-        st.session_state.text_input = file_reader.read_pdf(uploaded_file)  # Read the PDF content
+        bytes_data = uploaded_file.getvalue()
+        pdf_file = io.BytesIO(bytes_data)
+        st.session_state.text_input = file_reader.read_pdf(pdf_file)  # Read the PDF content
         st.success("PDF file uploaded successfully!")
 elif input_type == "Enter Text":
     st.session_state.text_input = st.text_area("Enter your text here:", height=150)
