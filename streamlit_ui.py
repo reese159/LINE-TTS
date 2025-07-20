@@ -105,7 +105,7 @@ st.subheader("Text Summarization")
 
 if st.button("Summarize Text"):
     log_narration=""
-    narration_text_box = st.text_area("Displaying narration process in real time", value=log_narration, height=150)
+    narration_text_box = st.empty()
     
     summary = summarize_text(text_input, model=model, max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
     st.write("Summary:")
@@ -116,23 +116,19 @@ if st.button("Summarize Text"):
     new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, summary)
     summary_audio = AudioSegment.empty()
     
+    # narration_text_box.text_area("Watch the narration process:", "", height=150)
+    
     # display and save audio segments using method displayed in kokoro documentation:
     for i, (gs, ps, audio) in enumerate(new_pipeline):
-        st.text_area(f"Blended Voice - Segment {i}:")
-        log_narration += str(i) # i => index
-        log_narration +=gs # gs => graphemes/text
-        log_narration +=ps # ps => phonemes
+        log_narration +=  f"Segment {i}: \n"  # i => index
+        log_narration += f"Graphemes: {gs} \n"  # gs => graphemes/text
+        log_narration += f"Phonemes: {ps} \n"  # ps => phonemes
+        narration_text_box.text_area("Watch the narration process:", log_narration, height=150)
         new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
         summary_audio += new_audio_segment
         print(log_narration)
         # st.audio #add_audio_to_narration(temp_path=NotImplemented, narration_name="user_narration.wav", new_audio=audio)
     audio_buffer = io.BytesIO()
     summary_audio.export(audio_buffer, format="wav") 
-    st.audio(data=audio_buffer, sample_rate=24000)
-    # sf.write(f'temp\\blended_voice_segment_{i}.wav', audio, 24000) # save each audio file
-    # base_name = os.path.splitext(pdf_to_narrate)[0]
-    # aj.join_audio_files("temp", narration_name=f"{base_name}_summary.wav") # join audio files
-    # aj.clear_temp_files() # clear temp files after joining
-    # print(f"summary: {summary_text}")
-    # print(f"summary narration saved in final_narrations\\{base_name}_summary.wav")
-
+    st.audio(data=audio_buffer)
+    
