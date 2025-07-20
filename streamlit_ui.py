@@ -101,36 +101,65 @@ elif input_type == "Enter Text":
 # --- Generate summary ---
 from text_summarization import summarize_text
 
-if st.session_state.text_input:
-    st.subheader("Text Summarization")
+summarization_area, narration_area = st.columns(2)
 
-    if st.button("Summarize Text"):
-        log_narration=""
+if st.session_state.text_input:
+    with summarization_area:
+        st.subheader("Text Summarization")
+
+        if st.button("Summarize Text"):
+            log_narration=""
+            
+            with st.spinner("Generating summary..."):
+                summary = summarize_text(st.session_state.text_input, model=model, max_tokens=max_tokens, openai_api_key=st.secrets["OPENAI_API_KEY"])
+                st.text_area("Sumary:", summary, height=150)
+                narration_text_box = st.empty()
+                
+                
+                current_voices = [voice["tensor"] for voice in st.session_state.voices]
+                current_weights = [voice["weight"] for voice in st.session_state.voices]
+                new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, summary)
+                summary_audio = AudioSegment.empty()
+                
+                # narration_text_box.text_area("Watch the narration process:", "", height=150)
+                
+                # display and save audio segments using method displayed in kokoro documentation:
+                for i, (gs, ps, audio) in enumerate(new_pipeline):
+                    log_narration +=  f"Segment {i}: \n"  # i => index
+                    log_narration += f"Graphemes: {gs} \n"  # gs => graphemes/text
+                    log_narration += f"Phonemes: {ps} \n"  # ps => phonemes
+                    narration_text_box.text_area("Watch the narration process:", log_narration, height=150)
+                    new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
+                    summary_audio += new_audio_segment
+                    print(log_narration)
+                    # st.audio #add_audio_to_narration(temp_path=NotImplemented, narration_name="user_narration.wav", new_audio=audio)
+                audio_buffer = io.BytesIO()
+                summary_audio.export(audio_buffer, format="wav") 
+                st.audio(data=audio_buffer)
+            
+    with narration_area:
+        st.subheader("Full Narration")
         
-        with st.spinner("Generating summary..."):
-            summary = summarize_text(st.session_state.text_input, model=model, max_tokens=max_tokens, openai_api_key=st.secrets["OPENAI_API_KEY"])
-            st.text_area("Sumary:", summary, height=150)
+        if st.button("Generate Full Narration"):
+            log_narration = ""
             narration_text_box = st.empty()
-            
-            
             current_voices = [voice["tensor"] for voice in st.session_state.voices]
             current_weights = [voice["weight"] for voice in st.session_state.voices]
-            new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, summary)
-            summary_audio = AudioSegment.empty()
-            
-            # narration_text_box.text_area("Watch the narration process:", "", height=150)
-            
+            new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, st.session_state.text_input)
+            full_audio = AudioSegment.empty()
+
             # display and save audio segments using method displayed in kokoro documentation:
             for i, (gs, ps, audio) in enumerate(new_pipeline):
-                log_narration +=  f"Segment {i}: \n"  # i => index
-                log_narration += f"Graphemes: {gs} \n"  # gs => graphemes/text
-                log_narration += f"Phonemes: {ps} \n"  # ps => phonemes
-                narration_text_box.text_area("Watch the narration process:", log_narration, height=150)
-                new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
-                summary_audio += new_audio_segment
+                log_narration = f"""
+                Segment {i}:
+                Graphemes: {gs}
+                Phonemes: {ps}
+                """ + log_narration
+                narration_text_box.text_area("Watch the narration process:", log_narration, height=500)
+                new_audio_segment = aj.tensor_to_audio_segment(audio, sample_rate=24000)
+                full_audio += new_audio_segment
                 print(log_narration)
-                # st.audio #add_audio_to_narration(temp_path=NotImplemented, narration_name="user_narration.wav", new_audio=audio)
-            audio_buffer = io.BytesIO()
-            summary_audio.export(audio_buffer, format="wav") 
+                
+                o_buffer = io.BytesIO()
+            full_audio.export(audio_buffer, format="wav") 
             st.audio(data=audio_buffer)
-        
