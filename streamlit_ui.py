@@ -1,10 +1,16 @@
 import streamlit as st
 import torch
+import soundfile as sf
+import audio_joiner as aj
+import voice_blend
+import io
+from IPython.display import display, Audio
+from pydub import AudioSegment
+
+st.set_page_config(layout="wide")
 
 st.title("LINE-TTS Narration App")
 st.write("Local Interactive Narration Environment")
-
-st.set_page_config(layout="wide")
 
 # Initialize the validation checks
 if 'valid_voice' not in st.session_state:
@@ -15,6 +21,8 @@ if 'valid_text' not in st.session_state:        # TODO: Validate current text in
 # Initialize voices in session state
 if "voices" not in st.session_state:
     st.session_state.voices = []
+# if "current_weights" not in st.session_state:
+#     st.session_state.current_weights = []
     
 with st.sidebar:
     st.subheader("Config")
@@ -22,7 +30,7 @@ with st.sidebar:
     # Option to change OpenAI model
     model = st.selectbox("Select OpenAI Model", ["gpt-3.5-turbo", "gpt-4"], index=0)
     # Option to set max tokens for summary
-    max_tokens = st.slider("Max Tokens for Summary", min_value=50, max_value=1000, value=250, step=50)
+    max_tokens = st.slider("Max Tokens for Summary Output", min_value=50, max_value=1000, value=250, step=50)
     st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library")
     st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
@@ -36,9 +44,12 @@ if uploaded_voices:
     for uploaded_voice in uploaded_voices:
         if uploaded_voice.name not in loaded_voice_names:
             try:
-                new_voice = torch.load(uploaded_voice)
+                # loaded_voice = torch.load(uploaded_voice)
+                loaded_voice = torch.load(uploaded_voice)  # Load the voice tensor
+                loaded_voice = loaded_voice.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))  # Ensure it's on the correct device
+                # new_voice = torch.load(uploaded_voice)
                 st.session_state.voices.append({"name": uploaded_voice.name,
-                                                "data": uploaded_voice, "weight": 0.0})
+                                                "tensor": loaded_voice, "weight": 0.0})
 
             except Exception as e:
                 st.error(f"Error loading voice tensor {uploaded_voice.name}: {e}")
@@ -62,6 +73,8 @@ if st.session_state.voices:
         )
     # Update the weight in the session state
         st.session_state.voices[i]["weight"] = weight
+        print(st.session_state.voices)
+        print(st.session_state.voices[i]["weight"])
         current_weights.append(weight)
         
     # Validate sum of weights to be 1.0
@@ -91,8 +104,35 @@ from text_summarization import summarize_text
 st.subheader("Text Summarization")
 
 if st.button("Summarize Text"):
+    log_narration=""
+    narration_text_box = st.text_area("Displaying narration process in real time", value=log_narration, height=150)
+    
     summary = summarize_text(text_input, model=model, max_tokens=250, openai_api_key=st.secrets["OPENAI_API_KEY"])
     st.write("Summary:")
     st.write(summary)
     
+    current_voices = [voice["tensor"] for voice in st.session_state.voices]
+    current_weights = [voice["weight"] for voice in st.session_state.voices]
+    new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, summary)
+    summary_audio = AudioSegment.empty()
     
+    # display and save audio segments using method displayed in kokoro documentation:
+    for i, (gs, ps, audio) in enumerate(new_pipeline):
+        st.text_area(f"Blended Voice - Segment {i}:")
+        log_narration += str(i) # i => index
+        log_narration +=gs # gs => graphemes/text
+        log_narration +=ps # ps => phonemes
+        new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
+        summary_audio += new_audio_segment
+        print(log_narration)
+        # st.audio #add_audio_to_narration(temp_path=NotImplemented, narration_name="user_narration.wav", new_audio=audio)
+    audio_buffer = io.BytesIO()
+    summary_audio.export(audio_buffer, format="wav") 
+    st.audio(data=audio_buffer, sample_rate=24000)
+    # sf.write(f'temp\\blended_voice_segment_{i}.wav', audio, 24000) # save each audio file
+    # base_name = os.path.splitext(pdf_to_narrate)[0]
+    # aj.join_audio_files("temp", narration_name=f"{base_name}_summary.wav") # join audio files
+    # aj.clear_temp_files() # clear temp files after joining
+    # print(f"summary: {summary_text}")
+    # print(f"summary narration saved in final_narrations\\{base_name}_summary.wav")
+
