@@ -161,6 +161,6 @@ Phonemes: {ps}
                 full_audio += new_audio_segment
                 print(log_narration)
                 
-                o_buffer = io.BytesIO()
+            audo_buffer = io.BytesIO()
             full_audio.export(audio_buffer, format="wav") 
             st.audio(data=audio_buffer)
