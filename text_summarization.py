@@ -52,9 +52,9 @@ def summarize_text(text, model="gpt-3.5-turbo", max_tokens=250, openai_api_key=N
             model=model,
             messages = [
                 {"role": "system", "content": "You are a helpful assistant for text summarization."},
-                {"role": "user", "content": f"Please summarize the following text:\n\n{text}"}
+                {"role": "user", "content": f"Please summarize the following text using at most {max_tokens} tokens:\n\n{text}"}
             ],
-            # max_tokens=max_tokens,  # Adjust as needed for summary length
+            max_tokens=max_tokens,  # Adjust as needed for summary length
         )
         return response.choices[0].message.content.strip()
     print("OpenAI API key is not provided. Please set the key to summarize text.")

@@ -1,13 +1,13 @@
 import fitz  
 
-def read_pdf(pdf_path):
+def read_pdf(pdf_document):
     """
     Reads a PDF file and returns its text content.
     """
     text = ""
     
     try:
-        pdf_document = fitz.open(stream=pdf_path, filetype="pdf") # Open the PDF file
+        pdf_document = fitz.open(stream=pdf_document) # Open the PDF file
         # loop through text, print below for testing
         for page_num in range(pdf_document.page_count):
             text += cropped_text(pdf_document, page_num) # Read each page and crop text
