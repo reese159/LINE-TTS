@@ -7,6 +7,7 @@ import file_reader
 import io
 from IPython.display import display, Audio
 from pydub import AudioSegment
+from text_summarization import summarize_text
 
 st.set_page_config(layout="wide")
 
@@ -19,12 +20,13 @@ if 'valid_voice' not in st.session_state:
 if 'text_input' not in st.session_state:        # TODO: Validate current text input prior to summary & narration
     st.session_state.text_input = ""
 
+
 # Initialize voices in session state
 if "voices" not in st.session_state:
     st.session_state.voices = []
 # if "current_weights" not in st.session_state:
 #     st.session_state.current_weights = []
-    
+
 with st.sidebar:
     st.subheader("Config")
     st.write("Adjust the settings below:")
@@ -34,6 +36,20 @@ with st.sidebar:
     max_tokens = st.slider("Max Tokens for Summary Output", min_value=50, max_value=750, value=250, step=50)
     st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library")
     st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
+
+
+# Use st.cache_resource to cache loaded voice tensors across reruns
+@st.cache_resource
+def load_voice_tensor(uploaded_file_object):
+    """Loads a voice tensor from an uploaded file and moves it to the appropriate device."""
+    try:
+        # Streamlit's file_uploader provides a SpooledTemporaryFile, which torch.load can handle.
+        loaded_tensor = torch.load(uploaded_file_object)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        return loaded_tensor.to(device)
+    except Exception as e:
+        st.error(f"Error loading voice tensor: {e}")
+        return None
 
 # File uploader for the voice tensor file
 uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
@@ -46,8 +62,7 @@ if uploaded_voices:
         if uploaded_voice.name not in loaded_voice_names:
             try:
                 # loaded_voice = torch.load(uploaded_voice)
-                loaded_voice = torch.load(uploaded_voice)  # Load the voice tensor
-                loaded_voice = loaded_voice.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))  # Ensure it's on the correct device
+                loaded_voice = load_voice_tensor(uploaded_voice)
                 # new_voice = torch.load(uploaded_voice)
                 st.session_state.voices.append({"name": uploaded_voice.name,
                                                 "tensor": loaded_voice, "weight": 0.0})
@@ -88,12 +103,20 @@ if st.session_state.voices:
 # --- Text input for narration ---
 st.subheader("Text Input for Narration")
 input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
+
+# Cached function for reading PDF
+
+@st.cache_data
+def read_pdf_content(pdf_file_buffer):
+    # Reads content from a PDF file buffer
+    return file_reader.read_pdf(pdf_file_buffer)
+
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
     if uploaded_file is not None:
         bytes_data = uploaded_file.getvalue()
         pdf_document = io.BytesIO(bytes_data)
-        st.session_state.text_input = file_reader.read_pdf(pdf_document)  # Read the PDF content
+        st.session_state.text_input = read_pdf_content(pdf_document)  # Read the PDF content
         st.success("PDF file uploaded successfully!")
 elif input_type == "Enter Text":
     st.session_state.text_input = st.text_area("Enter your text here:", height=150)
@@ -101,15 +124,19 @@ elif input_type == "Enter Text":
         st.success("Text entered successfully!")
 
 # --- Generate summary ---
-from text_summarization import summarize_text
-
 summarization_area, narration_area = st.columns(2)
+
+@st.cache_resource(show_spinner=False)
+def cached_blending(_voices, weights, text):
+    return voice_blend.blending_pt_files(_voices, weights, text)
+
 
 if st.session_state.text_input:
     with summarization_area:
         st.subheader("Text Summarization")
 
         if st.button("Summarize Text"):
+            
             log_narration=""
             
             with st.spinner("Generating summary..."):
@@ -120,7 +147,8 @@ if st.session_state.text_input:
                 
                 current_voices = [voice["tensor"] for voice in st.session_state.voices]
                 current_weights = [voice["weight"] for voice in st.session_state.voices]
-                new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, summary)
+                new_pipeline, new_voice = cached_blending(current_voices, current_weights, summary)
+                
                 summary_audio = AudioSegment.empty()
                 
                 # narration_text_box.text_area("Watch the narration process:", "", height=150)
@@ -151,7 +179,7 @@ Phonemes: {ps}
                 narration_text_box = st.empty()
                 current_voices = [voice["tensor"] for voice in st.session_state.voices]
                 current_weights = [voice["weight"] for voice in st.session_state.voices]
-                new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, st.session_state.text_input)
+                new_pipeline, new_voice = cached_blending(current_voices, current_weights, st.session_state.text_input)
                 full_audio = AudioSegment.empty()
 
                 # display and save audio segments using method displayed in kokoro documentation:
