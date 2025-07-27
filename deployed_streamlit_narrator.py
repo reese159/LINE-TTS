@@ -8,10 +8,9 @@ import io
 from IPython.display import display, Audio
 from pydub import AudioSegment
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="LINE-TTS Narration App", page_icon=":microphone:")
 
 st.title("LINE-TTS Narration App")
-st.write("Local Interactive Narration Environment")
 
 # Initialize the validation checks
 if 'valid_voice' not in st.session_state:
@@ -24,17 +23,28 @@ if "voices" not in st.session_state:
     st.session_state.voices = []
 # if "current_weights" not in st.session_state:
 #     st.session_state.current_weights = []
-    
+user_instructions = """This application allows you to blend voices from Kokoro TTS, creating your own custom voices and generating narrations.
+The application is meant to help meet accessibility needs, allowing users the option to generate audio from text-based content locally without relying on subscription-based services.
+This community cloud version only allows for a maximum of 1000 characters when generating narrations to avoid exceeding resource limits. 
+For larger text/documents, please download the freely available repository and use the local version."""
+
+
+
 with st.sidebar:
-    st.subheader("Config")
-    st.write("Adjust the settings below:")
+    # Option to set max tokens for summary
+    st.header("Local Interactive Narration Environment")
+    st.divider()
+    st.subheader("AI Summary Config")
+    st.write("Credit to OpenAI for the GPT models used in this app.")
     # Option to change OpenAI model
     model = st.selectbox("Select OpenAI Model", ["gpt-4o-mini", "gpt-4.1-nano", "gpt-4.1"], index=0)
-    # Option to set max tokens for summary
-    max_tokens = st.slider("Max Tokens for Summary Output", min_value=50, max_value=500, value=250, step=50)
-    st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library")
+    max_tokens = st.slider("Max Tokens for Summary Output Provided by GPT", min_value=50, max_value=500, value=250, step=50)
+    st.divider()
+    st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library. Please follow the link below freely download and access the voice tensors.")
     st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
+
+st.subheader("Voice Selection and Blending")
 # File uploader for the voice tensor file
 uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
 
@@ -84,9 +94,11 @@ if st.session_state.voices:
     else:
         st.session_state.valid_voice = True
         st.success("Weights are valid and sum to 1.0.")
+st.divider()
 
 # --- Text input for narration ---
 st.subheader("Text Input for Narration")
+st.markdown("*User Note* - The application currently supports a maximum of 1000 characters for full narration")
 input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
@@ -159,7 +171,9 @@ Phonemes: {ps}
                 narration_text_box = st.empty()
                 current_voices = [voice["tensor"] for voice in st.session_state.voices]
                 current_weights = [voice["weight"] for voice in st.session_state.voices]
-                new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, st.session_state.text_input)
+                truncated_text = st.session_state.text_input[:1000]  # Truncate to first 1000 characters for processing
+                
+                new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, truncated_text)
                 full_audio = AudioSegment.empty()
 
                 # display and save audio segments using method displayed in kokoro documentation:
@@ -183,3 +197,8 @@ Phonemes: {ps}
             st.download_button(label="Save Current Voices and Weights",
                             data=voice_buffer,
                             file_name=blended_voice_file_name)
+
+
+st.divider() 
+st.markdown(user_instructions)
+st.link_button("Link to Local Version Download", "https://github.com/reese159/LINE-TTS")
