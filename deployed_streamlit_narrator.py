@@ -23,12 +23,12 @@ if "voices" not in st.session_state:
     st.session_state.voices = []
 # if "current_weights" not in st.session_state:
 #     st.session_state.current_weights = []
-user_instructions = """This application allows you to blend voices from Kokoro TTS, creating your own custom voices and generating narrations.
+MAX_CHARS_LIMIT = 1000
+user_instructions = f"""This application allows you to blend voices from Kokoro TTS, creating your own custom voices and generating narrations.
 The application is meant to help meet accessibility needs, allowing users the option to generate audio from text-based content locally without relying on subscription-based services.
-This community cloud version only allows for a maximum of 1000 characters when generating narrations to avoid exceeding resource limits. 
+This helps to ensure that users can access content in a way that is convenient, cost-effective, and privacy-minded.
+This community cloud version only allows for a maximum of {MAX_CHARS_LIMIT} characters when generating narrations to avoid exceeding resource limits. 
 For larger text/documents, please download the freely available repository and use the local version."""
-
-
 
 with st.sidebar:
     # Option to set max tokens for summary
@@ -40,8 +40,8 @@ with st.sidebar:
     model = st.selectbox("Select OpenAI Model", ["gpt-4o-mini", "gpt-4.1-nano", "gpt-4.1"], index=0)
     max_tokens = st.slider("Max Tokens for Summary Output Provided by GPT", min_value=50, max_value=500, value=250, step=50)
     st.divider()
-    st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library. Please follow the link below freely download and access the voice tensors.")
-    st.link_button("Models on HuggingFace", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
+    st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library. Please follow the link below to freely download and access the voice tensors on HuggingFace.")
+    st.link_button("Voices", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
 
 st.subheader("Voice Selection and Blending")
@@ -98,7 +98,7 @@ st.divider()
 
 # --- Text input for narration ---
 st.subheader("Text Input for Narration")
-st.markdown("*User Note* - The application currently supports a maximum of 1000 characters for full narration")
+st.markdown(f"*User Note* - The application currently supports a maximum of {MAX_CHARS_LIMIT} characters for full narration")
 input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
@@ -108,13 +108,14 @@ if input_type == "Upload PDF":
         st.session_state.text_input = file_reader.read_pdf(pdf_document)  # Read the PDF content
         st.success("PDF file uploaded successfully!")
 elif input_type == "Enter Text":
-    st.session_state.text_input = st.text_area("Enter your text here:", height=150)
+    st.session_state.text_input = st.text_area("Enter your text here:", max_chars=MAX_CHARS_LIMIT,
+    help=f"Maximum {MAX_CHARS_LIMIT} characters allowed.", height=150)
     if st.session_state.text_input:
         st.success("Text entered successfully!")
 
 # --- Generate summary ---
 from text_summarization import summarize_text
-
+st.divider()
 summarization_area, narration_area = st.columns(2)
 
 if st.session_state.text_input:
@@ -171,7 +172,7 @@ Phonemes: {ps}
                 narration_text_box = st.empty()
                 current_voices = [voice["tensor"] for voice in st.session_state.voices]
                 current_weights = [voice["weight"] for voice in st.session_state.voices]
-                truncated_text = st.session_state.text_input[:1000]  # Truncate to first 1000 characters for processing
+                truncated_text = st.session_state.text_input[:MAX_CHARS_LIMIT]  # Truncate to first MAX_CHARS_LIMIT characters for processing
                 
                 new_pipeline, new_voice = voice_blend.blending_pt_files(current_voices, current_weights, truncated_text)
                 full_audio = AudioSegment.empty()
@@ -201,4 +202,4 @@ Phonemes: {ps}
 
 st.divider() 
 st.markdown(user_instructions)
-st.link_button("Link to Local Version Download", "https://github.com/reese159/LINE-TTS")
+st.link_button("Local Version Download", "https://github.com/reese159/LINE-TTS")
