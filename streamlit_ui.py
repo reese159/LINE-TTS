@@ -168,6 +168,14 @@ Phonemes: {ps}
                 audio_buffer = io.BytesIO()
                 summary_audio.export(audio_buffer, format="wav") 
                 st.audio(data=audio_buffer)
+                # Save the blended voice tensor to a file
+                voice_buffer = io.BytesIO()
+                torch.save(new_voice, voice_buffer)
+                blended_voice_file_name = st.text_input("Enter desired voice file name (e.g.,my_voice.pt):", "new_voice.pt")
+                st.download_button(label="Save Current Voices and Weights",
+                                data=voice_buffer,
+                                file_name=blended_voice_file_name)
+
             
     with narration_area:
         st.subheader("Full Narration")
@@ -196,3 +204,10 @@ Phonemes: {ps}
             audio_buffer = io.BytesIO()
             full_audio.export(audio_buffer, format="wav") 
             st.audio(data=audio_buffer)
+            # Save the blended voice tensor to a file
+            voice_buffer = io.BytesIO()
+            torch.save(new_voice, voice_buffer)
+            blended_voice_file_name = st.text_input("Enter desired voice file name (e.g.,my_voice.pt):", "new_voice.pt")
+            st.download_button(label="Save Current Voices and Weights",
+                            data=voice_buffer,
+                            file_name=blended_voice_file_name)
