@@ -5,12 +5,10 @@ import audio_joiner as aj
 import voice_blend
 import file_reader
 import io
+import os
 from IPython.display import display, Audio
 from pydub import AudioSegment
 
-st.set_page_config(layout="wide", page_title="LINE-TTS Narration App", page_icon=":microphone:")
-
-st.title("LINE-TTS Narration App")
 
 # Initialize the validation checks
 if 'valid_voice' not in st.session_state:
@@ -23,12 +21,48 @@ if "voices" not in st.session_state:
     st.session_state.voices = []
 # if "current_weights" not in st.session_state:
 #     st.session_state.current_weights = []
-MAX_CHARS_LIMIT = 1000
+MAX_CHARS_LIMIT = 500
 user_instructions = f"""This application allows you to blend voices from Kokoro TTS, creating your own custom voices and generating narrations.
 The application is meant to help meet accessibility needs, allowing users the option to generate audio from text-based content locally without relying on subscription-based services.
 This helps to ensure that users can access content in a way that is convenient, cost-effective, and privacy-minded.
 This community cloud version only allows for a maximum of {MAX_CHARS_LIMIT} characters when generating narrations to avoid exceeding resource limits. 
 For larger text/documents, please download the freely available repository and use the local version."""
+
+st.set_page_config(layout="wide", page_title="LINE-TTS Narration App", page_icon=":microphone:")
+
+st.title("LINE-TTS Narration App")
+
+st.subheader("Voice Selection and Blending")
+# --- Select from existing voices ---
+try:
+    voice_dir = "assets/voices"
+    if os.path.exists(voice_dir) and os.path.isdir(voice_dir):
+        existing_voices_options = [f for f in os.listdir(voice_dir) if f.endswith('.pt')]
+    else:
+        existing_voices_options = []
+        st.info("`assets/voices` directory not found. Place pre-existing voices there to select them.")
+except Exception as e:
+    existing_voices_options = []
+    st.warning(f"Could not read `assets/voices` directory: {e}")
+
+if existing_voices_options:
+    selected_existing_voices = st.multiselect(
+        "Select from existing voices",
+        options=existing_voices_options,
+        help="Select from voices available in the `assets/voices` directory."
+    )
+
+    if selected_existing_voices:
+        loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
+        for voice_name in selected_existing_voices:
+            if voice_name not in loaded_voice_names:
+                try:
+                    voice_path = os.path.join(voice_dir, voice_name)
+                    loaded_voice = torch.load(voice_path).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+                    st.session_state.voices.append({"name": voice_name, "tensor": loaded_voice, "weight": 0.0})
+                except Exception as e:
+                    st.error(f"Error loading existing voice tensor {voice_name}: {e}")
+
 
 with st.sidebar:
     # Option to set max tokens for summary
@@ -99,7 +133,7 @@ st.divider()
 # --- Text input for narration ---
 st.subheader("Text Input for Narration")
 st.markdown(f"*User Note* - The application currently supports a maximum of {MAX_CHARS_LIMIT} characters for full narration")
-input_type = st.radio("Choose Input Type:", ("Upload PDF", "Enter Text"))
+input_type = st.radio("Choose Input Type:", ("Enter Text", "Upload PDF"))
 if input_type == "Upload PDF":
     uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
     if uploaded_file is not None:
@@ -145,7 +179,7 @@ if st.session_state.text_input:
 Graphemes: {gs}
 Phonemes: {ps}
 """ + log_narration
-                    narration_text_box.text_area("Watch the narration process:", log_narration, height=150)
+                    narration_text_box.text_area("Watch the narration process:", log_narration, height=500)
                     new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
                     summary_audio += new_audio_segment
                     print(log_narration)
