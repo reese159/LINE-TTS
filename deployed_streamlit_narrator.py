@@ -32,38 +32,6 @@ st.set_page_config(layout="wide", page_title="LINE-TTS Narration App", page_icon
 
 st.title("LINE-TTS Narration App")
 
-st.subheader("Voice Selection and Blending")
-# --- Select from existing voices ---
-try:
-    voice_dir = "assets/voices"
-    if os.path.exists(voice_dir) and os.path.isdir(voice_dir):
-        existing_voices_options = [f for f in os.listdir(voice_dir) if f.endswith('.pt')]
-    else:
-        existing_voices_options = []
-        st.info("`assets/voices` directory not found. Place pre-existing voices there to select them.")
-except Exception as e:
-    existing_voices_options = []
-    st.warning(f"Could not read `assets/voices` directory: {e}")
-
-if existing_voices_options:
-    selected_existing_voices = st.multiselect(
-        "Select from existing voices",
-        options=existing_voices_options,
-        help="Select from voices available in the `assets/voices` directory."
-    )
-
-    if selected_existing_voices:
-        loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
-        for voice_name in selected_existing_voices:
-            if voice_name not in loaded_voice_names:
-                try:
-                    voice_path = os.path.join(voice_dir, voice_name)
-                    loaded_voice = torch.load(voice_path).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
-                    st.session_state.voices.append({"name": voice_name, "tensor": loaded_voice, "weight": 0.0})
-                except Exception as e:
-                    st.error(f"Error loading existing voice tensor {voice_name}: {e}")
-
-
 with st.sidebar:
     # Option to set max tokens for summary
     st.header("Local Interactive Narration Environment")
@@ -77,29 +45,67 @@ with st.sidebar:
     st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library. Please follow the link below to freely download and access the voice tensors on HuggingFace.")
     st.link_button("Voices", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 
-
 st.subheader("Voice Selection and Blending")
-# File uploader for the voice tensor file
-uploaded_voices = st.file_uploader("Upload voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
+# --- Select from existing voices ---
+try:
+    voice_dir = "assets/voices"
+    if os.path.exists(voice_dir) and os.path.isdir(voice_dir):
+        existing_voices_options = [f for f in os.listdir(voice_dir) if f.endswith('.pt')]
+    else:
+        existing_voices_options = []
+        st.info("`assets/voices` directory not found. Place pre-existing voices there to select them.")
+except Exception as e:
+    existing_voices_options = []
+    st.warning(f"Could not read `assets/voices` directory: {e}")
 
+
+uploaded_voices = st.file_uploader("User-uploaded voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
+
+# refresh voices in session state
+st.session_state.voices = []
+
+# function to update multiselect voices
+def update_multiselect_voices(selected_existing_voices):
+    loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
+    for voice_name in selected_existing_voices:
+        if voice_name not in loaded_voice_names:
+            try:
+                voice_path = os.path.join(voice_dir, voice_name)
+                loaded_voice = torch.load(voice_path).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+                st.session_state.voices.append({"name": voice_name, "tensor": loaded_voice, "weight": 0.0})
+            except Exception as e:
+                st.error(f"Error loading existing voice tensor {voice_name}: {e}")
+
+# function to update user uploaded voices
+def update_uploaded_voices(uploaded_files):
+    print("asdf")
+    for uploaded_file in uploaded_files:
+        try:
+            print("asdf")
+            loaded_voice = torch.load(uploaded_file).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+            voice_name = uploaded_file.name
+            print(voice_name)
+            # if voice_name not in [voice["name"] for voice in st.session_state.voices]:
+            st.session_state.voices.append({"name": voice_name, "tensor": loaded_voice, "weight": 0.0})
+        except Exception as e:
+            st.error(f"Error loading uploaded voice tensor {uploaded_file.name}: {e}")
+
+# Allow user to upload voices and add them to the session state
 if uploaded_voices:
     # Check for duplicate voice names
     loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
-    
-    for uploaded_voice in uploaded_voices:
-        if uploaded_voice.name not in loaded_voice_names:
-            try:
-                # loaded_voice = torch.load(uploaded_voice)
-                loaded_voice = torch.load(uploaded_voice)  # Load the voice tensor
-                loaded_voice = loaded_voice.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))  # Ensure it's on the correct device
-                # new_voice = torch.load(uploaded_voice)
-                st.session_state.voices.append({"name": uploaded_voice.name,
-                                                "tensor": loaded_voice, "weight": 0.0})
+    update_uploaded_voices(uploaded_voices)
 
-            except Exception as e:
-                st.error(f"Error loading voice tensor {uploaded_voice.name}: {e}")
-                
-    st.success("Voice tensors loaded!")
+# Allow user to select from existing voices
+if existing_voices_options:
+    selected_existing_voices = st.multiselect(
+        "Select from Kokoro-82M voices",
+        options=existing_voices_options,
+        help="Select from voices available in the `assets/voices` directory."
+    )
+    # if selected_existing_voices:
+    update_multiselect_voices(selected_existing_voices)
+
 
 # --- Display loaded voices and get weights ---
 if st.session_state.voices:
