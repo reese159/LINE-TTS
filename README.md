@@ -34,6 +34,8 @@ Step 5, generate full narration:
 
 https://github.com/user-attachments/assets/7287b611-3b6f-4149-8d53-141f6275f99b
 
+Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
+
 ## Local Setup
 
 This project was created using [python 3.12](https://www.python.org/downloads/release/python-31210/), please install to run locally.
