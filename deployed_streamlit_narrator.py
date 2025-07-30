@@ -172,7 +172,7 @@ if st.session_state.text_input and st.session_state.valid_voice:
 Graphemes: {gs}
 Phonemes: {ps}
 """ + log_narration
-                    narration_text_box.text_area("Watch the narration process:", log_narration, height=500)
+                    narration_text_box.text_area("Watch the narration process:", log_narration, height=150)
                     new_audio_segment  = aj.tensor_to_audio_segment(audio, sample_rate=24000)
                     summary_audio += new_audio_segment
                 # Display audio generated
