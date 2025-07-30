@@ -14,13 +14,25 @@ Below is a typical user workflow:
 
 Step 1, select/upload voices:
 
+https://github.com/user-attachments/assets/0e09269c-5153-44a3-a536-a6f01088bba8
+
 Step 2, set voice weights:
+
+https://github.com/user-attachments/assets/1dc40e81-9a20-41b9-992f-8ddbb2fa991d
 
 Step 3, provide text input for summary/narration:
 
+https://github.com/user-attachments/assets/cd689348-d529-4522-b7df-25efaaf95cee
+
+https://github.com/user-attachments/assets/184d2fe3-ec45-4b66-8108-f881906fd37f
+
 Step 4, generate summary:
 
+https://github.com/user-attachments/assets/e7987857-ef98-4de9-99a3-a9dba4c30a51
+
 Step 5, generate full narration:
+
+https://github.com/user-attachments/assets/7287b611-3b6f-4149-8d53-141f6275f99b
 
 ## Local Setup
 
@@ -36,19 +48,6 @@ streamlit run local_streamlit_narrator.py
 
 For text summarization to funtion locally, the user will need to generate an api key from OpenAI, which can be purchased on the [OpenAI Platform](https://platform.openai.com/settings/organization/api-keys). After obtaining the API key, the user will need to generate a "secrets.toml" file in the root directoy of the project, containing the OpenAI API key in the following format:
 OPENAI_API_KEY="your_api_key_here"
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ---
 #### Credits
