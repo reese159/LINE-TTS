@@ -139,7 +139,7 @@ if input_type == "Upload PDF":
         st.session_state.text_input = file_reader.read_pdf(pdf_document)  # Read the PDF content
         st.success("PDF file uploaded successfully!")
 elif input_type == "Enter Text":
-    st.session_state.text_input = st.text_area("Enter your text here:", "This text will be narrated by the user-selected voice", max_chars=MAX_CHARS_LIMIT,
+    st.session_state.text_input = st.text_area("Enter your text here:", "This text will be narrated by the user-selected voice",
     help=f"Maximum {MAX_CHARS_LIMIT} characters allowed.", height=150)
     if st.session_state.text_input:
         st.success("Text entered successfully!")
