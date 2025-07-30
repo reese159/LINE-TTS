@@ -112,7 +112,7 @@ if st.session_state.voices:
             min_value=0.0,
             max_value=1.0,
             value=voice["weight"], # Use the current weight from session state
-            step=0.01,
+            step=0.1,
             key=f"weight_input_{voice['name']}_{i}" # Unique key
         )
     # Update the weight in the session state

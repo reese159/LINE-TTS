@@ -91,8 +91,8 @@ if existing_voices_options:
     # if selected_existing_voices:
     update_multiselect_voices(selected_existing_voices)
 
-uploaded_voices = st.file_uploader("User-uploaded voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
 # Allow user to upload voices and add them to the session state
+uploaded_voices = st.file_uploader("User-uploaded voice tensor file (.pt)", type=["pt"], accept_multiple_files=True)
 if uploaded_voices:
     # Check for duplicate voice names
     loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
@@ -110,7 +110,7 @@ if st.session_state.voices:
             min_value=0.0,
             max_value=1.0,
             value=voice["weight"], # Use the current weight from session state
-            step=0.01,
+            step=0.1,
             key=f"weight_input_{voice['name']}_{i}" # Unique key
         )
     # Update the weight in the session state
@@ -144,12 +144,10 @@ elif input_type == "Enter Text":
     if st.session_state.text_input:
         st.success("Text entered successfully!")
 
-# --- Generate summary ---
+# --- narration area ---
 from text_summarization import summarize_text
 st.divider()
 summarization_area, narration_area = st.columns(2)
-
-# --- narration area ---
 if st.session_state.text_input and st.session_state.valid_voice:
     #--- Summarization area ---
     with summarization_area:
