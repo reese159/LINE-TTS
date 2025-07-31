@@ -4,6 +4,11 @@ import torch
 import numpy as np
 
 def join_audio_files(temp_path, narration_name="user_narration.wav"):
+    '''
+    :temp_path: Path to the directory containing temporary audio files
+    :narration_name: Name of the final audio file to be created
+    This function combines all .wav files in the specified directory into a single audio file.
+    '''
     combined_audio = AudioSegment.empty()
     
     for filename in os.listdir(temp_path):
@@ -19,24 +24,6 @@ def join_audio_files(temp_path, narration_name="user_narration.wav"):
     except Exception as e:
         print(f"Error exporting combined audio: {e}")
         
-
-
-def add_audio_to_narration(temp_path=NotImplemented, narration_name="user_narration.wav", new_chunk=None):
-    # Initialize an empty AudioSegment to store the combined audio
-    combined_audio = AudioSegment.empty()
-
-    # Simulate a loop where you get audio chunks
-    for i in range(5):
-        # In a real scenario, 'new_chunk' would come from
-        # a recording, a file, or another processing step.
-        # Here, we create a silent chunk for demonstration.
-        new_chunk = AudioSegment.silent(duration=100)  # testing .1 second of silence
-
-        # Append the new chunk to the combined audio
-        combined_audio += new_chunk
-
-    # Export the final combined audio to a file
-    combined_audio.export(narration_name, format="wav")
 
 def clear_temp_files():
     import os
