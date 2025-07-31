@@ -7,6 +7,7 @@ Local Interactive Narration Environment for Text-To-Speech
 ## Introduction
 
 This project contains both an online and local version, with the online version of the application existing primarily as a showcase of the application's capabilities with hard limits on the length of narrations that can be generated to avoid exceeding streamlit's resource limits. As such, for full use of narration generation and maximum user privacy, the local version is recommended.
+
 The browser version of this application can be found at [https://linetts.streamlit.app/](https://linetts.streamlit.app/)
 
 Aside from the character limit and OpenAI API key configuration (should the user wish to generate text summaries in the local version), the functionality of both versions of the application should be identical.
@@ -38,6 +39,7 @@ Step 5, generate full narration:
 https://github.com/user-attachments/assets/bfc17773-aab6-4420-a3b2-3ee08f05969a
 
 Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
+
 Obviously, not all stops are necessary, as the user may only want ot benerate a summary or full narration, with the summary being heavily recommended in the browser version of the application.
 
 ## Local Setup
@@ -57,7 +59,9 @@ OPENAI_API_KEY="your_api_key_here"
 
 ---
 #### Credits
-All open-weight models provided can be found on huggingface under [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) created by [hexgrad](https://huggingface.co/hexgrad) under the [Apache 2.0 License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md). 
+All open-weight models provided can be found on huggingface under [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) created by [hexgrad](https://huggingface.co/hexgrad) under the [Apache 2.0 License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md).
+
 Direct download for voice-tensor files provided can be found under [voices](https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices) in the Kokoro-82M repository. 
+
 Credit to [OpenAI](https://platform.openai.com/docs/overview) for the provided models used in text summarization.
 ****
