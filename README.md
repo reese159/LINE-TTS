@@ -14,25 +14,25 @@ Below is a typical user workflow:
 
 Step 1, select/upload voices:
 
-![User_Flow_Recording_1-Voice_Selection](https://github.com/user-attachments/assets/97bfe74c-90c7-4315-99b8-640a532c6c14)
+https://github.com/user-attachments/assets/0e09269c-5153-44a3-a536-a6f01088bba8
 
 Step 2, set voice weights:
 
-![User_Flow_Recording_2-Weight_Selection](https://github.com/user-attachments/assets/4beeab93-7d60-4b4f-9ab6-7732ee5b1b1e)
+https://github.com/user-attachments/assets/1dc40e81-9a20-41b9-992f-8ddbb2fa991d
 
 Step 3, provide text input for summary/narration:
 
-![User_Flow_Recording_3-text_input](https://github.com/user-attachments/assets/90e7d21b-ade4-42dc-a3be-8b3b8e477e23)
+https://github.com/user-attachments/assets/cd689348-d529-4522-b7df-25efaaf95cee
 
-![User_Flow_Recording_3-pdf_input](https://github.com/user-attachments/assets/151a93f8-a4ed-4f73-9d0e-fdc38e8ad043)
+https://github.com/user-attachments/assets/5474c84e-0acc-4017-bf05-803336e8562f
 
 Step 4, generate summary:
 
-![User_Flow_Recording_4-text_summary_generation](https://github.com/user-attachments/assets/e7de7d32-a258-4c45-9778-3e1fe8dfe663)
+https://github.com/user-attachments/assets/3fe1a7cb-fe87-4ec7-820f-fd5db43ba17c
 
 Step 5, generate full narration:
 
-![User_Flow_Recording_5-narration_generation](https://github.com/user-attachments/assets/0ac60673-2df8-4487-8d95-5a2922b49874)
+https://github.com/user-attachments/assets/bfc17773-aab6-4420-a3b2-3ee08f05969a
 
 Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
 
@@ -56,3 +56,4 @@ OPENAI_API_KEY="your_api_key_here"
 All open-weight models provided can be found on huggingface under [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) created by [hexgrad](https://huggingface.co/hexgrad) under the [Apache 2.0 License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md). 
 Direct download for voice-tensor files provided can be found under [voices](https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices) in the Kokoro-82M repository. 
 Credit to [OpenAI](https://platform.openai.com/docs/overview) for the provided models used in text summarization.
+****
