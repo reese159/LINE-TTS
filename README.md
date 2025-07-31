@@ -24,15 +24,15 @@ Step 3, provide text input for summary/narration:
 
 https://github.com/user-attachments/assets/cd689348-d529-4522-b7df-25efaaf95cee
 
-https://github.com/user-attachments/assets/184d2fe3-ec45-4b66-8108-f881906fd37f
+https://github.com/user-attachments/assets/5474c84e-0acc-4017-bf05-803336e8562f
 
 Step 4, generate summary:
 
-https://github.com/user-attachments/assets/e7987857-ef98-4de9-99a3-a9dba4c30a51
+https://github.com/user-attachments/assets/3fe1a7cb-fe87-4ec7-820f-fd5db43ba17c
 
 Step 5, generate full narration:
 
-https://github.com/user-attachments/assets/7287b611-3b6f-4149-8d53-141f6275f99b
+https://github.com/user-attachments/assets/bfc17773-aab6-4420-a3b2-3ee08f05969a
 
 Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
 
