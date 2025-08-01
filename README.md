@@ -6,6 +6,15 @@ Local Interactive Narration Environment for Text-To-Speech
 
 ## Introduction
 
+LINE-TTS is a text-to-speech application written in python, providing the user the ability to:
+
+- Generate their own voices for narration via blending of either open source or user-uploaded voice tensors
+- Enter text or upload a PDF
+- Generate a summary of the provided text with voice narration using an OpenAI model with configuration options for the model being used and the maximum number of tokens allowed in the summary
+- Generate a full narration of the provided text
+- Listen to or download either type of narration
+- Download and save generated voice tensors for later use
+
 This project contains both an online and local version, with the online version of the application existing primarily as a showcase of the application's capabilities with hard limits on the length of narrations that can be generated to avoid exceeding streamlit's resource limits. As such, for full use of narration generation and maximum user privacy, the local version is recommended.
 
 The browser version of this application can be found at [https://linetts.streamlit.app/](https://linetts.streamlit.app/)
@@ -58,10 +67,11 @@ For text summarization to funtion locally, the user will need to generate an api
 OPENAI_API_KEY="your_api_key_here"
 
 ---
-#### Credits
+
+### Credits
+
 All open-weight models provided can be found on huggingface under [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) created by [hexgrad](https://huggingface.co/hexgrad) under the [Apache 2.0 License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md).
 
-Direct download for voice-tensor files provided can be found under [voices](https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices) in the Kokoro-82M repository. 
+Direct download for voice-tensor files provided can be found under [voices](https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices) in the Kokoro-82M repository.
 
 Credit to [OpenAI](https://platform.openai.com/docs/overview) for the provided models used in text summarization.
-****
