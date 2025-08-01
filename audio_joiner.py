@@ -5,9 +5,10 @@ import numpy as np
 
 def join_audio_files(temp_path, narration_name="user_narration.wav"):
     '''
+    This function combines all .wav files in the specified directory into a single audio file.
+    
     :temp_path: Path to the directory containing temporary audio files
     :narration_name: Name of the final audio file to be created
-    This function combines all .wav files in the specified directory into a single audio file.
     '''
     combined_audio = AudioSegment.empty()
     
@@ -26,6 +27,9 @@ def join_audio_files(temp_path, narration_name="user_narration.wav"):
         
 
 def clear_temp_files():
+    '''
+    This function deletes all temporary audio files in the 'temp' for cleanup directory.
+    '''
     import os
     temp_dir = 'temp'
     for filename in os.listdir(temp_dir):
@@ -40,6 +44,13 @@ def clear_temp_files():
 
 
 def tensor_to_audio_segment(audio_tensor, sample_rate=24000):
+    '''     
+    Converts a PyTorch tensor to an AudioSegment object.
+    
+    :audio_tensor: PyTorch tensor containing audio data
+    :sample_rate: Sample rate of the audio data
+    :return: AudioSegment object
+    '''
     if isinstance(audio_tensor, torch.Tensor):
         audio_np = audio_tensor.squeeze().cpu().numpy()
     else:

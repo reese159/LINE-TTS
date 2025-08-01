@@ -26,7 +26,7 @@ This helps to ensure that users can access content in a way that is convenient, 
 This community cloud version only allows for a maximum of {MAX_CHARS_LIMIT} characters when generating narrations to avoid exceeding resource limits. 
 For larger text/documents, please download the freely available repository and use the local version."""
 st.set_page_config(layout="wide", page_title="LINE-TTS Narration App", page_icon=":microphone:")
-st.title("LINE-TTS Narration App")
+st.title("LINE-TTS Narration App")  
 
 # --- Sidebar for configuration ---
 with st.sidebar:
@@ -55,11 +55,16 @@ except Exception as e:
     existing_voices_options = []
     st.warning(f"Could not read `assets/voices` directory: {e}")
 
-# --- voice selection ---
+# --- Voice selection ---
 # refresh voices in session state
 st.session_state.voices = []
 # function to update multiselect voices
 def update_multiselect_voices(selected_existing_voices):
+    '''
+    Updates the session state with selected existing voices.
+    
+    :selected_existing_voices: List of selected voice names from existing voices
+    '''
     loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
     for voice_name in selected_existing_voices:
         if voice_name not in loaded_voice_names:
@@ -72,6 +77,11 @@ def update_multiselect_voices(selected_existing_voices):
 
 # function to update user uploaded voices
 def update_uploaded_voices(uploaded_files):
+    ''' 
+    Updates the session state with user-uploaded voices.
+    
+    :uploaded_files: List of uploaded voice files
+    '''
     for uploaded_file in uploaded_files:
         try:
             loaded_voice = torch.load(uploaded_file).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
@@ -144,12 +154,12 @@ elif input_type == "Enter Text":
     if st.session_state.text_input:
         st.success("Text entered successfully!")
 
-# --- narration area ---
+# --- Narration area ---
 from text_summarization import summarize_text
 st.divider()
 summarization_area, narration_area = st.columns(2)
 if st.session_state.text_input and st.session_state.valid_voice:
-    #--- Summarization area ---
+    # --- Summarization area ---
     with summarization_area:
         st.subheader("Text Summarization")
         if st.button("Summarize Text"):

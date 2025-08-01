@@ -57,7 +57,7 @@ except Exception as e:
     existing_voices_options = []
     st.warning(f"Could not read `assets/voices` directory: {e}")
 
-# --- voice selection ---
+# --- Voice selection ---
 # refresh voices in session state
 st.session_state.voices = []
 # function to update multiselect voices
@@ -145,12 +145,12 @@ elif input_type == "Enter Text":
     if st.session_state.text_input:
         st.success("Text entered successfully!")
 
-# --- narration area ---
+# --- Narration area ---
 from text_summarization import summarize_text
 st.divider()
 summarization_area, narration_area = st.columns(2)
 if st.session_state.text_input and st.session_state.valid_voice:
-    #--- Summarization area ---
+    # --- Summarization area ---
     with summarization_area:
         st.subheader("Text Summarization")
         if st.button("Summarize Text"):
