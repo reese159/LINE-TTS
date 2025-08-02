@@ -1,9 +1,9 @@
 import streamlit as st
 import torch
 import soundfile as sf
-import audio_joiner as aj
-import voice_blend
-import file_reader
+import mymodule.audio_joiner as aj
+import mymodule.voice_blend as voice_blend
+import mymodule.file_reader as file_reader
 import io
 import os
 from IPython.display import display, Audio
@@ -155,7 +155,7 @@ elif input_type == "Enter Text":
         st.success("Text entered successfully!")
 
 # --- Narration area ---
-from text_summarization import summarize_text
+from mymodule.text_summarization import summarize_text
 st.divider()
 summarization_area, narration_area = st.columns(2)
 if st.session_state.text_input and st.session_state.valid_voice:
