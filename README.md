@@ -27,28 +27,25 @@ Step 1, select/upload voices:
 
 ![User_Flow_Recording_1-Voice_Selection](https://github.com/user-attachments/assets/ea78a34b-7cea-43a1-a364-468ccd565f7a)
 
-
-https://github.com/user-attachments/assets/0e09269c-5153-44a3-a536-a6f01088bba8
-
 Step 2, set voice weights:
 
-https://github.com/user-attachments/assets/1dc40e81-9a20-41b9-992f-8ddbb2fa991d
+![User_Flow_Recording_2-Weight_Selection](https://github.com/user-attachments/assets/0e4563d6-2b15-4103-bf41-87ae0f71721e)
 
 Note, the user should input weights summing to 1.0 to avoid warnings.
 
 Step 3, provide text input for summary/narration:
 
-https://github.com/user-attachments/assets/cd689348-d529-4522-b7df-25efaaf95cee
+![User_Flow_Recording_3-text_input](https://github.com/user-attachments/assets/52156dd4-82ae-4325-bf43-c2be7fba808c)
 
-https://github.com/user-attachments/assets/5474c84e-0acc-4017-bf05-803336e8562f
+![User_Flow_Recording_3-pdf_input](https://github.com/user-attachments/assets/3b753326-ef66-42cb-8ef6-d53522d240e1)
 
 Step 4, generate summary:
 
-https://github.com/user-attachments/assets/3fe1a7cb-fe87-4ec7-820f-fd5db43ba17c
+![User_Flow_Recording_4-text_summary_generation](https://github.com/user-attachments/assets/9402a8d3-6eb5-4773-a320-de2503259b54)
 
 Step 5, generate full narration:
 
-https://github.com/user-attachments/assets/bfc17773-aab6-4420-a3b2-3ee08f05969a
+![User_Flow_Recording_5-narration_generation](https://github.com/user-attachments/assets/7379005e-ebe5-43bd-bc49-7c12cffb300a)
 
 Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
 
