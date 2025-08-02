@@ -39,15 +39,14 @@ Step 3, provide text input for summary/narration using the text box provided or 
 
 ![User_Flow_Recording_3-pdf_input](https://github.com/user-attachments/assets/3b753326-ef66-42cb-8ef6-d53522d240e1)
 
-Step 4, generate summary:
+Step 4, generate summary or full narration:
 
 ![User_Flow_Recording_4-text_summary_generation](https://github.com/user-attachments/assets/9402a8d3-6eb5-4773-a320-de2503259b54)
 
-Step 5, generate full narration:
+![User_Flow_Recording_4-narration_generation](https://github.com/user-attachments/assets/86ecff5f-5404-48ac-b621-c1f00200d263)
 
-![User_Flow_Recording_5-narration_generation](https://github.com/user-attachments/assets/7379005e-ebe5-43bd-bc49-7c12cffb300a)
 
-Note, after either step 4 or 5, the user can download both the narration as well as the blended voice itself for future use.
+Note, after either step 4, the user can download both the narration as well as the blended voice itself for future use.
 
 Obviously, not all stops are necessary, as the user may only want ot benerate a summary or full narration, with the summary being heavily recommended in the browser version of the application.
 
