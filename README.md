@@ -33,7 +33,7 @@ Step 2, set voice weights:
 
 Note, the user should input weights summing to 1.0 to avoid warnings.
 
-Step 3, provide text input for summary/narration:
+Step 3, provide text input for summary/narration using the text box provided or uploadinga valid PDF:
 
 ![User_Flow_Recording_3-text_input](https://github.com/user-attachments/assets/52156dd4-82ae-4325-bf43-c2be7fba808c)
 
