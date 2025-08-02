@@ -62,7 +62,7 @@ The project's core logic is encapsulated within the `mymodule` folder. Below is 
 
 - **`file_reader.py`**: Responsible for handling file inputs, specifically for extracting text content from PDF files. It includes logic to crop headers and footers to get clean text for narration.
 
-- **`text_summarization.py`**: This module interfaces with the OpenAI API to provide text summarization capabilities. It takes a body of text and returns a condensed version.
+- **`text_summarization.py`**: This module interfaces with the OpenAI API to provide text summarization capabilities.
 
 - **`voice_blend.py`**: The core of the voice customization feature. This module contains the logic for blending multiple voice tensors based on user-defined weights to create a unique, custom voice for narration.
 
@@ -81,8 +81,37 @@ LINE-TTS/
 
 ## User Flow Walkthrough
 
-Below is a technical walkthrough of the local version of the application, using the **`local_streamlit_narrator.py`** entrypoint file as a guide. Note: the only noteworthy differences in implementation between this version and the deployed version should be a maximum number of characters allowed for narration in the deployed version, and the addition of an option for a "secrets.toml" file to be included in the root directory fo the local version.
-TODO: ADD USER FLOW DIAGRAM
+Below is a technical walkthrough of the local version of the application, using the main entrypoint files as a guide. Note: the only noteworthy differences in implementation between this version and the deployed version should be a maximum number of characters allowed for narration in the deployed version, and the addition of an option for a "secrets.toml" file to be included in the root directory fo the local version.
+
+The top of this file consists of setup, including imports and streamlit configuration, as well as the setting of certain "state" variables that will need to be kept persistent through changes in the applicaion. This region also contanis several configuration settings seen on the sidebar that the user can use to alter what OpenAI model will be used, and set its maximum numer of tokens. These are held as varaibles to later be passed to functions found in **`text_summarization.py`**.
+
+### Step 1, select/upload voices
+
+TODO: upload GIF
+
+This constitutes the "--- Voice selection ---" region of the main application file. This region provides two methods for a user to select files, either a multiselection menu comprised of default Kokoro-82m voices, or a file upload region that accepts pytorch tensors uploaded by a user. This region is used primarily to update the "voices" state variable that maintains the voices a user plans to use to generate a narration. Several functions are used here for the purpose of properly updating said voice list, and voices are loaded as tensors to be used as arguments later on.
+
+Step 2, set voice weights
+
+TODO: upload GIF
+
+This constitutes the "--- Display loaded voices and get weights ---" region of the main application file. Here, the user can set weights for the voices, and receives feedback on whether the selected weights are valid. via a simple check to ensure the current total weight of all voices sums to 1.0.
+ Note: this operation is performed by altering the aforementioned "voices" variable held in the session state, which maintains each voice, tensor, and corresponding weights, all variables needed to blend and generate a new voice tensor for narration.
+
+### Step 3, provide text input for summary/narration using the text box provided or uploadinga valid PDF
+
+TODO: upload GIF
+
+This constitutes the "--- Text input for narration ---" region of the main application file. Here, the user can select one of two input methods via a radio button, uploading a valid PDF file or typing in a valid text box. Note: the "upload pdf" reads in the uploaded file by converting to a "bytes" object using the io library and passing the object to the **`file_reader.py`** module's read_pdf funciton. the input is saved into the "text_input" session state variable to ensure it persists.
+
+### Step 4, generate summary or full narration
+
+TODO: upload GIF
+This constitutes the "--- Narration area ---" region of the main application file, which contains both of the following regions:
+
+The "--- Summarization area ---" handles text summarization via the OpenAI API. The region provides consistent user feedback throughout the process, leveraging the aforementioned configuration variables provided on the sidebar to handle model selection and constraints. The summary istelf is performed using the "summarize_text" function found in the **`text_summarization.py`** module. The voices are then blended and narration generated using the "blending_pt_files" function found in the **`voice_blend.py`** module. Finally, the audio is generated using the "tensor_to_audio_segment" function found in the **`audio_joiner.py`** module, narrating the summarization generated by the selected model. This output is then displayed for the user to listen/download, alongside downloading the voice tensor created by the user.
+
+The "--- Full narration area ---" handles text summarization via the OpenAI API. The region provides consistent user feedback throughout the process, with the deployed version only processing the first 500 characters. The voices are then blended and narration generated using the "blending_pt_files" function found in the **`voice_blend.py`** module. Finally, the audio is generated using the "tensor_to_audio_segment" function found in the **`audio_joiner.py`** module, narrating text provided by the user. This output is then displayed for the user to listen/download, alongside the downloading voice tensor created by the user.
 
 ## Known Issues
 
@@ -93,9 +122,11 @@ TODO: ADD USER FLOW DIAGRAM
 ### Minor
 
 - No fallback implemented for the local OpenAI text summarization method.
+- The user pressing the "Full Narration" button after "Text Summarization" causes the "Text Summarization" results to no longer be displayed. This is also true in the reverse case of selecting "Text Summarization" after "Full Narration".
 
 ## Future Work
 
 - Developed using OpenAI API documentation and model current as of 08/02/2025, could be updated to utilize a legacy implementiation as a fallback or a method not requiring an API key to allow a user to access the text summarization feature without requriing an API key.
+- Allowing narration results to persist between narration generation runs.
 - Potential integration of caching mechanisms offered by Streamlit (e.g. @st.cache_data and @st.cache_resource) to optimize resouce management, speed application responsiveness, and lower memory constraints.
 - Separating more reused code into functions - some processes, e.g. those found in summary narration and full narration, have components that are repeated. For cleanliness, segments could be constrained to a "generate_narration" function.

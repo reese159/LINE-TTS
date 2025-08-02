@@ -45,7 +45,11 @@ with st.sidebar:
     st.link_button("Voices", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 st.subheader("Voice Selection and Blending")
 
-# --- Select from existing voices ---
+# --- Voice selection ---
+# refresh voices in session state
+st.session_state.voices = []
+
+# Multiselect for existing voices
 try:
     voice_dir = "assets/voices"
     if os.path.exists(voice_dir) and os.path.isdir(voice_dir):
@@ -57,9 +61,6 @@ except Exception as e:
     existing_voices_options = []
     st.warning(f"Could not read `assets/voices` directory: {e}")
 
-# --- Voice selection ---
-# refresh voices in session state
-st.session_state.voices = []
 # function to update multiselect voices
 def update_multiselect_voices(selected_existing_voices):
     loaded_voice_names = {voice["name"] for voice in st.session_state.voices}
@@ -78,7 +79,6 @@ def update_uploaded_voices(uploaded_files):
         try:
             loaded_voice = torch.load(uploaded_file).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
             voice_name = uploaded_file.name
-            # if voice_name not in [voice["name"] for voice in st.session_state.voices]:
             st.session_state.voices.append({"name": voice_name, "tensor": loaded_voice, "weight": 0.0})
         except Exception as e:
             st.error(f"Error loading uploaded voice tensor {uploaded_file.name}: {e}")

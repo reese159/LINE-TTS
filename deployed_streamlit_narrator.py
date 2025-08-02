@@ -43,7 +43,11 @@ with st.sidebar:
     st.link_button("Voices", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
 st.subheader("Voice Selection and Blending")
 
-# --- Select from existing voices ---
+# --- Voice selection ---
+# Multiselect for existing voices
+# refresh voices in session state
+st.session_state.voices = []
+
 try:
     voice_dir = "assets/voices"
     if os.path.exists(voice_dir) and os.path.isdir(voice_dir):
@@ -55,9 +59,6 @@ except Exception as e:
     existing_voices_options = []
     st.warning(f"Could not read `assets/voices` directory: {e}")
 
-# --- Voice selection ---
-# refresh voices in session state
-st.session_state.voices = []
 # function to update multiselect voices
 def update_multiselect_voices(selected_existing_voices):
     '''
