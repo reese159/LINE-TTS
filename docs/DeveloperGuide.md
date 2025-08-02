@@ -130,3 +130,5 @@ The "--- Full narration area ---" handles text summarization via the OpenAI API.
 - Allowing narration results to persist between narration generation runs.
 - Potential integration of caching mechanisms offered by Streamlit (e.g. @st.cache_data and @st.cache_resource) to optimize resouce management, speed application responsiveness, and lower memory constraints.
 - Separating more reused code into functions - some processes, e.g. those found in summary narration and full narration, have components that are repeated. For cleanliness, segments could be constrained to a "generate_narration" function.
+- **Potential Feature**: Allow the user to select multiple narrators, with a method for switching between them during the narration, e.g. to seperate "speakers" or sections of the text.
+- **Potential Feature** Automatic voice selection based on some kind of a sentiment analysis of the text for a "recommended" voice for narration.
