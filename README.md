@@ -25,6 +25,9 @@ Below is a typical user workflow:
 
 Step 1, select/upload voices:
 
+![User_Flow_Recording_1-Voice_Selection](https://github.com/user-attachments/assets/ea78a34b-7cea-43a1-a364-468ccd565f7a)
+
+
 https://github.com/user-attachments/assets/0e09269c-5153-44a3-a536-a6f01088bba8
 
 Step 2, set voice weights:
