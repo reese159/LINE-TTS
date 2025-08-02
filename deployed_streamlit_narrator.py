@@ -167,6 +167,7 @@ if st.session_state.text_input and st.session_state.valid_voice:
             
             # Start genertaing summarization
             with st.spinner("Generating summary..."):
+                # Check if OpenAI API key is provided via streamlit secrets
                 summary = summarize_text(st.session_state.text_input, model=model, openai_api_key=st.secrets["OPENAI_API_KEY"])
                 st.text_area("Sumary:", summary, height=150)
                 narration_text_box = st.empty()

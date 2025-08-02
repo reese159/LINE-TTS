@@ -161,6 +161,7 @@ if st.session_state.text_input and st.session_state.valid_voice:
                 if st.secrets == None or "OPENAI_API_KEY" not in st.secrets:
                     secrets_file_path = os.path.join(os.path.dirname(__file__), "secrets.toml")
                     try:
+                        # Load OpenAI API key from secrets.toml file, prepare for summarization
                         with open(secrets_file_path, 'r') as f:
                             openai_api_key = toml.load(f).get("OPENAI_API_KEY")
                             summary = summarize_text(st.session_state.text_input, model=model, max_tokens=max_tokens, openai_api_key=openai_api_key)
@@ -174,6 +175,7 @@ if st.session_state.text_input and st.session_state.valid_voice:
                         print(f"Error initializing OpenAI client: {e}")
                         st.error("OpenAI API key is not set. Please set it in the secrets.toml file. as: OPENAI_API_KEY=\"your_key_here\"")
                 else:       
+                    # Use OpenAI API key from Streamlit secrets, prepare for summarization
                     summary = summarize_text(st.session_state.text_input, model=model, openai_api_key=st.secrets["OPENAI_API_KEY"])
                     st.text_area("Sumary:", summary, height=150)
                     narration_text_box = st.empty()
