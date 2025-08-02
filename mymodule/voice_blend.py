@@ -81,9 +81,6 @@ def blending_pt_files(voice_tensor_list, weight_list, text_to_narrate = ""):
     # TODO: MOVE FOLLOWING NOTE TO README
     # Note: the language code refers to the language of the text itself and can be at odds with the voice tensor
     # e.g a british, japanese, etc. voice (bf_george) can be used to speak american english text (lang-code='a')
-    
-    # Use CUDA-enabled gpu if available, else default to CPU
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     try:
         # Load voice tensors 
