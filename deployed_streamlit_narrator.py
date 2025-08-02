@@ -37,7 +37,7 @@ with st.sidebar:
     st.write("Credit to OpenAI for the GPT models used in this app.")
     # Option to change OpenAI model
     model = st.selectbox("Select OpenAI Model", ["gpt-4o-mini", "gpt-4.1-nano", "gpt-4.1"], index=0)
-    max_tokens = st.slider("Max Tokens for Summary Output Provided by GPT", min_value=50, max_value=500, value=250, step=50)
+    max_tokens = st.slider("Max Tokens for Summary Output Provided by GPT", min_value=50, max_value=250, value=50, step=50)
     st.divider()
     st.write("Credit to hexgrad for Kokoro-82M voice models and Kokoro inference library. Please follow the link below to freely download and access the voice tensors on HuggingFace.")
     st.link_button("Voices", "https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices")
