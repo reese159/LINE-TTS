@@ -62,7 +62,7 @@ streamlit run local_streamlit_narrator.py
 
 ## *Optional*
 
-For text summarization to funtion locally, the user will need to generate an api key from OpenAI, which can be purchased on the [OpenAI Platform](https://platform.openai.com/settings/organization/api-keys). After obtaining the API key, the user will need to generate a "secrets.toml" file in the root directoy of the project, containing the OpenAI API key in the following format:
+For text summarization to function locally, the user will need to generate an api key from OpenAI, which can be purchased on the [OpenAI Platform](https://platform.openai.com/settings/organization/api-keys). After obtaining the API key, the user will need to generate a "secrets.toml" file in the root directory of the project, containing the OpenAI API key in the following format:
 OPENAI_API_KEY="your_api_key_here"
 
 More technical documentation on the process found in the [LINE-TTS Developer Guide](https://github.com/reese159/LINE-TTS/blob/main/docs/DeveloperGuide.md)
