@@ -48,13 +48,13 @@ Step 4, generate summary or full narration:
 
 Note, after either step 4, the user can download both the narration as well as the blended voice itself for future use.
 
-Obviously, not all stops are necessary, as the user may only want ot benerate a summary or full narration, with the summary being heavily recommended in the browser version of the application.
+not all steps are necessary, as the user may only want to generate a summary or full narration. The summary in particular is heavily recommended for the browser version of the application.
 
 ## Local Setup
 
 This project was created using [python 3.12](https://www.python.org/downloads/release/python-31210/), please install to run locally.
 
-All requirements can be found in "requirements.txt", found in the root of this repository. Can be installed directly to a virtual environment by running "pip install -r requirements.txt" in the terminal with the venv active.
+All requirements can be found in "requirements.txt", found in the root of this repository, and can be installed directly to a virtual environment by running "pip install -r requirements.txt" in the terminal with the venv active.
 
 After installation, the user can run the local version of this application by opening a terminal in the root directory of the project with the venv activated, and entering the following command:
 
